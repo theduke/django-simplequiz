@@ -18,7 +18,7 @@
         nodeQuestion = node.find('.question'),
         nodeOverlay = node.find('.overlay'),
         nodeOverlayInner = nodeOverlay.find('.inner'),
-        nodeInfo = node.find('.quiz-info'),
+        nodeInfo = node.find('.quiz-info-wrap'),
         nodeMistakes = node.find('.mistakes'),
 
         nodeResults = node.find('.results'),
@@ -130,6 +130,8 @@
       nodeScore.html('0');
 
       nodeRestart.addClass('disabled');
+
+      nodeInfo.slideUp()
 
       // Reset questions and answer items.
       for (var i = 0; i < settings.questions.length; i++) {
@@ -296,7 +298,7 @@
       var success = score === maxScore;
 
       if (success || settings.show_answers_on_finish) {
-        nodeInfo.html(settings.info);
+        nodeInfo.slideDown();
       }
 
       for (var i = 0; i < settings.questions.length; i++) {

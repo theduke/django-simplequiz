@@ -44,6 +44,11 @@
       margin-right: 2em; }
       .simplequiz .top-bar .controls .give-up {
         margin-right: 1em; }
+  .simplequiz .quiz-info-wrap {
+    margin: 1em;
+    padding: 1em;
+    background-color: #D3FABB;
+    border-radius: 20px; }
   .simplequiz .question-wrap {
     padding: 1em;
     margin: 0.5em;

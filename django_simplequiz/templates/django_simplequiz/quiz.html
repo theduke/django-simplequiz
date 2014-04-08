@@ -107,8 +107,11 @@
     {% endif %}
   </div>
   {% endif %}
-
-  <div class="quiz-info"></div>
+  
+  <div class="quiz-info-wrap" style="display: none;">
+    <h3>Info</h3>
+    <div class="quiz-info">{{ object.info }}</div>
+  </div>
 
   <div class="answers">
     {% if object.mode == "click" %}
