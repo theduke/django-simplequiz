@@ -153,7 +153,7 @@ class Question(models.Model):
       'id': self.id,
       'name': escape(self.name),
       'answer': escape(self.answer),
-      'image': self.image or '',
+      'image': str(self.image) if self.image else '',
       'info': escape(self.info),
       'weight': self.weight
     }

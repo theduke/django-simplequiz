@@ -222,12 +222,20 @@
       updateTimerLabel();
     }
 
+
+    function renderTime(seconds) {
+      var min = Math.floor(seconds / 60);
+      var sec = seconds % 60;
+
+      var text = (min > 10 ? min : '0' + min) + ':' + (sec > 10 ? sec : '0' + sec);
+
+      return text;
+    }
+
     function updateTimerLabel() {
       var remaining = settings.time - Math.floor(time_taken / 1000);
-      var min = Math.floor(remaining / 60);
-      var sec = remaining % 60;
-
-      var label = (min > 10 ? min : '0' + min) + ':' + (sec > 10 ? sec : '0' + sec);
+      
+      var label = renderTime(remaining);
       nodeTimer.html(label);
     }
 
@@ -336,6 +344,7 @@
           nodeOverlay.find('.results').show();
 
           nodeOverlay.find('.score').html(data.score * 100 + '%');
+          nodeOverlay.find('.time').html(renderTime(Math.floor(time_taken / 1000)));
           nodeOverlay.find('.position').html(data.pos + ' / ' + data.attempts);
 
           if (data.personal_pos) {
