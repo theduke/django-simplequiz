@@ -16,5 +16,5 @@ urlpatterns = patterns('django_simplequiz.views',
     url(r'^quiz/(?P<pk>\d+)$', QuizDetailView.as_view(), name='quiz'),
     url(r'^quiz/(?P<slug>[-_\w]+)$', QuizDetailView.as_view(), name='quiz_slugged'),
 
+    url(r'^quiz/(?P<pk>\d+)/like$', 'like', name='simplequiz_like'),
 )
-

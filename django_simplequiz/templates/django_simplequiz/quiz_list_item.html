@@ -1,0 +1,14 @@
+<div class="quiz-list-item">
+  <div class="name">
+    <a href="{% url "quiz" pk=quiz.id %}">{{ quiz.title }}</a>
+  </div>
+  <div class="data-row">
+    <span class="label">Played:</span>
+    <span class="played">{{ quiz.num_attempts }}</span>
+  </div>
+  <div class="data-row likes">
+    <span class="label">Likes:</span>
+    <span class="likes">{{ quiz.num_likes }}</span>
+  </div>
+</div>
+

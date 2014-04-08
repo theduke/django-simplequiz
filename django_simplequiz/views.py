@@ -3,7 +3,7 @@ import dateutil.parser
 
 from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http.response import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -30,16 +30,47 @@ def discover(request):
     Discover quizzes.
     """
 
-    qs = Quiz.objects.filter(published=True).annotate(num_attempts=Count('attempts'))
+    qs = Quiz.objects.filter(published=True)\
+      .annotate(num_attempts=Count('attempts', distinct=True))\
+      .annotate(num_likes=Count('likes', distinct=True))
+
+    most_played = qs.order_by('-num_attempts')[:20]
+    new = qs.order_by('-created_at')[:20]
+
+    # Collect likes for all displayed quizzes to prevent extra queries.
+    ids = [x.id for x in most_played] + [x.id for x in new]
+    likes = QuizLike.objects.filter(user=request.user, id__in=ids).values_list('quiz_id')
+    likes = [x[0] for x in likes]
 
     return render(request, 'django_simplequiz/discover.html', {
         'page_title': 'Discover Quizzes',
         'head_title': 'Discover Quizzes',
 
-        'most_played': qs.order_by('-num_attempts')[:20],
-        'new': qs.order_by('-created_at')[:20]
+        'most_played': most_played,
+        'new': new,
+
+        'likes': likes,
     })
 
+
+@login_required
+def like(request, pk):
+    result = ''
+
+    # Check if user already likes quiz.
+    if QuizLike.objects.filter(user_id=request.user.id, quiz_id=pk).count():
+        result = 'already_liked'
+    else:
+        quiz = get_object_or_404(Quiz, pk=pk)
+        like = QuizLike(quiz=quiz, user=request.user)
+        like.save()
+
+        result = 'ok'
+
+    if request.is_ajax():
+        return HttpResponse(result)
+    else:
+        return redirect('quiz', pk=pk)
 
 
 class QuizDetailView(DetailView):

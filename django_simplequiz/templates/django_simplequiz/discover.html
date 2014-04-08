@@ -13,13 +13,8 @@
       <ul>
         {% for quiz in most_played %}
           <li class="quiz">
-            <div class="name">
-              <a href="{% url "quiz" pk=quiz.id %}">{{ quiz.title }}</a>
-            </div>
-            <div class="data-row">
-              <span class="label">Played</span>
-              <span class="played">{{ quiz.num_attempts }}</span>
-            </div>
+            {% include "django_simplequiz/quiz_list_item.html" %}
+          </li>
         {% endfor %}
       </ul>
     </div>
@@ -31,13 +26,8 @@
       <ul>
         {% for quiz in new %}
           <li class="quiz">
-            <div class="name">
-              <a href="{% url "quiz" pk=quiz.id %}">{{ quiz.title }}</a>
-            </div>
-            <div class="data-row">
-              <span class="label">Played</span>
-              <span class="played">{{ quiz.num_attempts }}</span>
-            </div>
+             {% include "django_simplequiz/quiz_list_item.html" %}
+          </li>
         {% endfor %}
       </ul>
     </div>

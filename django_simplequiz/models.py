@@ -227,3 +227,12 @@ class Challenge(models.Model):
   @classmethod
   def get_challenges(cls, user_id):
     return cls.objects.filter(Q(challenger_id=user_id) | Q(challenged_id=user_id)).order_by('-challenged_at')
+
+
+class QuizLike(models.Model):
+  quiz = models.ForeignKey(Quiz, related_name='likes')
+  user = models.ForeignKey(User, related_name='+')
+  time = models.DateTimeField(auto_now_add=True)
+
+  class Meta:
+    unique_together = (('quiz', 'user'),)
