@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load simplequiz_tags %}
+{% block page_title %}Quiz Dashboard{% endblock page_title %}
+{% block head_title %}Quiz Dashboard{% endblock head_title %}
+{% block content %}
+<div id="quiz-dashboard">
+  <div class="attempts">
+    <h3>Quizzes done</h3>
+
+    <table class="attempt-list table">
+      <tr class="header">
+        <th>Quiz</th>
+        <th>Score</th>
+        <th>Time</th>
+      </tr>
+
+      {% for attempt in attempts %}
+      <tr class="attempt">
+        <td>
+          <a href="{% url "quiz" pk=attempt.quiz.id %}">{{ attempt.quiz.title }}</a>
+        </td>
+        <td>{{ attempt|score }}</td>
+        <td>{{ attempt.finished_at|date }}</td>
+      </tr> 
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <table class="table challenges-list">
+      <tr class="header">
+        <th>Challenger</th>
+        <th>Challenged</th>
+        <th>Result</th>
+        <th>Date</th>
+      </tr>
+
+      {% for challenge in challenges %}
+      <tr class="challenge">
+        <td class="{% if challenge.challenger_id == user.id %}me{% endif %}">{{ challenge.challenger.username }}</td>
+        <td class="{% if challenge.challenged_id == user.id %}me{% endif %}">{{ challenge.challenged.username }}</td>
+        <td class="result">
+          {% if challenge.challenger_id == user.id and not challenge.challenger_attempt %}
+            <a href="{% url "" %}"></a>
+          {% else %}
+
+          {% endif %}
+        </td>
+
+      </tr> 
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock content %}

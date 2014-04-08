@@ -1,0 +1,35 @@
+.simplequiz {
+  position: relative; }
+  .simplequiz .label {
+    color: black; }
+  .simplequiz .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -10;
+    background-color: white;
+    opacity: 0.9; }
+    .simplequiz .overlay .inner {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 3em;
+      background-color: #ddd;
+      border-radius: 20px; }
+      .simplequiz .overlay .inner h3 {
+        margin: 0 0 1em 0; }
+  .simplequiz.quiz-click .answers .question-item {
+    display: inline-block;
+    padding: 2em;
+    background: #eee;
+    cursor: pointer;
+    border-radius: 15px; }
+  .simplequiz .answer-wrap input.answer.success {
+    background: #419641; }
+  .simplequiz .answer-wrap input.answer.fail {
+    background: #f2dede; }
+  .simplequiz .answers .question-item.answered {
+    background: #419641; }
+  .simplequiz .answers .question-item.wrong {
+    background: #f2dede !important; }
+    .simplequiz .answers .question-item.wrong td {
+      background: #f2dede !important; }

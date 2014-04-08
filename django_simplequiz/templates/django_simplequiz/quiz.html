@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load simplequiz_tags %}
+{% block page_title %}{{ object.title }}{% endblock page_title %}
+{% block head_title %}{{ object.title }}{% endblock head_title %}
+
+{% block content %}
+<div class="simplequiz quiz-{{ object.mode }}" id="quiz-{{ object.id }}"> 
+
+  <div class="hidden" style="display: none;">
+    {% csrf_token %}
+    <div class="data" style="display: none;">{{ store|safe }}</div>
+    }
+  </div>
+
+
+  <div class="overlay" style="display: none;">
+    <div class="inner">
+      <h3>Results</h3>
+
+      <img src="{{ STATIC_URL }}django_simplequiz/preloader.gif" class="preloader" style="display: none;" alt="">
+      <div class="results" style="display: none;">
+        <div class="score-row">
+          <span class="label">Score:</span>
+          <span class="score"></span>
+        </div>
+        <div class="position-row">
+          <span class="label">Ranking:</span>
+          <span class="position"></span>
+        </div>
+        <div class="personal-position-row">
+          <span class="label">Personal Ranking:</span>
+          <span class="personal-position"></span>
+        </div>
+        <div class="register-info" style="display: none;">
+          <p>
+            To save your results, 
+            <a href="{% url "account_login" %}" class="btn btn-info">Login</a> or
+            <a href="{% url "account_signup" %}" class="btn btn-info">Register</a>.
+          </p>
+        </div>
+        <button class="btn btn-lg btn-success closer">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="description"></div>
+  <div class="results">
+    
+  </div>
+  <div class="controls">
+    <button class="btn btn-lg btn-primary start">Start</button>
+    <button class="btn btn-info pause disabled">{{ label_pause }}</button>
+    <button class="btn btn-warning give-up disabled">Give up</button+>
+    <button class="btn btn-lg btn-primary restart disabled">{{ label_restart }}</button>
+
+  </div>
+  <div class="status">
+    <div class="score">
+      <span class="label">Score:</span>
+      <span class="current">0</span> / {{ object.questions.count }}
+    </div>
+    <div class="timer">
+      <span class="label">Time left:</span>
+      <span class="time"></span>
+    </div>
+  </div>
+  {% if object.mode == "click" or object.one_by_one %}
+  <div class="question-wrap">
+    <span class="label">Question:</span>
+    <span class="question"></span>
+  </div>
+  {% endif %}
+  {% if object.mode == "type" %}
+  <div class="answer-wrap">
+    <div class="label">
+      Enter answer:<br />
+    </div>
+    <input type="text" class="answer" disabled="disabled" />
+    {% if not object.auto_accept %}
+      <span class="anser_confirm_info">(Enter to submit.)</span>
+    {% endif %}
+
+
+    {% if can_page %}
+    <div class="paging">
+      <button class="btn btn-info prev disabled">Prev</button>
+      <button class="btn btn-info next disabled">Next</button>
+    </div>      
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="answers">
+    {% if object.mode == "click" %}
+      {% for question in object.questions.all %}
+      <div class="question-item question-{{ question.id }}" data-id="{{ question.id }}">
+        {% if question.image %}
+          <img src="{{ MEDIA_URL }}{{ question.image }}" alt="{{ question.answer }}">
+        {% else %}
+          {{ question.answer }}
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% elif not object.one_by_one %}
+      <table class="table answers-table">
+        <tr>
+          {% if show_hints %}
+            <th>Question/Hint</th> 
+          {% endif %}
+          <th>Answer</th>
+          {% if show_info %}
+            <th>Info</th> 
+          {% endif %}
+        </tr>
+        
+        {% for question in object.get_questions %}
+        <tr class="question-item question-{{ question.id }}" class="{{ object.one_by_one|yesno:"hidden,visible" }}">
+          {% if show_hints %}
+            <td class="name">{{ question.name }}</td> 
+          {% endif %}
+          <td class="answer"></td>
+          {% if show_info %}
+            <td class="info"></td>
+          {% endif %}
+        </tr> 
+        {% endfor %}
+      </table>
+
+    {% endif %}
+  </div>
+
+</div>
+{% endblock content %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_simplequiz/css/django_simplequiz.css"> 
+{% endblock css %}
+
+{% block js_bottom %}
+<script type="text/javascript" src="{{ STATIC_URL }}django_simplequiz/simplequiz.js"></script> 
+{% endblock js_bottom %}
