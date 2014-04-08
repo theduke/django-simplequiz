@@ -16,7 +16,8 @@ setup(
         # Form helper.
         'django-crispy-forms >= 1.4',
         'django-taggit >= 0.11',
-        'django-mptt'
+        'django-mptt',
+        'python-dateutil',
     ],
     license = 'BSD License',
     description = 'Convenienve functionality for Django projects.',
