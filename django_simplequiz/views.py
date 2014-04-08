@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http.response import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 
 from django_baseline import get_or_create_csrf_token
@@ -27,6 +28,14 @@ class QuizDetailView(DetailView):
 
   model = Quiz
   template_name = "django_simplequiz/quiz.html"
+
+
+  def dispatch(self, *args, **kwargs):
+    response = super(QuizDetailView, self).dispatch(*args, **kwargs)
+    if not (self.object.published or self.object.user_can_edit(self.request.user)):
+        raise PermissionDenied('Unpublished!')
+
+    return response
 
 
   def get_context_data(self, *args, **kwargs):
@@ -52,6 +61,9 @@ class QuizDetailView(DetailView):
     context['label_restart'] = 'Restart'
 
     return context
+
+
+
 
 
 @require_http_methods(["POST"])

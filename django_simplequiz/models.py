@@ -58,6 +58,10 @@ class Quiz(models.Model):
     return self.title
 
 
+  def user_can_edit(self, user):
+    return user.is_superuser or self.created_by == user
+
+
   def clean(self):
     pass
 
