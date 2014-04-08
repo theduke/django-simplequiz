@@ -11,20 +11,25 @@ class Migration(SchemaMigration):
         # Adding model 'Quiz'
         db.create_table(u'django_simplequiz_quiz', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=80)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=255)),
+            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=80)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=255)),
             ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('mode', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('time', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('end_on_wrong_answer', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('end_on_wrong_answers', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
             ('force_order', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('allow_paging', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('randomize_order', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('one_by_one', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('ignore_case', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('ignore_spaces', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('auto_accept', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('show_answers_on_finish', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('published', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='+', null=True, to=orm['auth.User'])),
+            ('playcount', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
         ))
         db.send_create_signal(u'django_simplequiz', ['Quiz'])
 
@@ -32,22 +37,38 @@ class Migration(SchemaMigration):
         db.create_table(u'django_simplequiz_question', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('quiz', self.gf('django.db.models.fields.related.ForeignKey')(related_name='questions', to=orm['django_simplequiz.Quiz'])),
-            ('name', self.gf('django.db.models.fields.TextField')()),
-            ('answer', self.gf('django.db.models.fields.TextField')()),
+            ('kind', self.gf('django.db.models.fields.CharField')(default='plain', max_length=50)),
+            ('name', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ('answer', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('info', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=255)),
+            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=255, blank=True)),
+            ('weight', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
         db.send_create_signal(u'django_simplequiz', ['Question'])
 
-        # Adding model 'QuizAttempt'
-        db.create_table(u'django_simplequiz_quizattempt', (
+        # Adding model 'Attempt'
+        db.create_table(u'django_simplequiz_attempt', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='+', null=True, to=orm['auth.User'])),
+            ('quiz', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attempts', to=orm['django_simplequiz.Quiz'])),
             ('started_at', self.gf('django.db.models.fields.DateTimeField')()),
             ('finished_at', self.gf('django.db.models.fields.DateTimeField')()),
-            ('score', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('time_taken', self.gf('django.db.models.fields.PositiveIntegerField')()),
+            ('score', self.gf('django.db.models.fields.FloatField')()),
         ))
-        db.send_create_signal(u'django_simplequiz', ['QuizAttempt'])
+        db.send_create_signal(u'django_simplequiz', ['Attempt'])
+
+        # Adding model 'Challenge'
+        db.create_table(u'django_simplequiz_challenge', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('challenger', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['auth.User'])),
+            ('challenger_attempt', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='+', null=True, to=orm['django_simplequiz.Attempt'])),
+            ('challenged', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['auth.User'])),
+            ('challenged_attempt', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='+', null=True, to=orm['django_simplequiz.Attempt'])),
+            ('challenged_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('declined', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        ))
+        db.send_create_signal(u'django_simplequiz', ['Challenge'])
 
 
     def backwards(self, orm):
@@ -57,8 +78,11 @@ class Migration(SchemaMigration):
         # Deleting model 'Question'
         db.delete_table(u'django_simplequiz_question')
 
-        # Deleting model 'QuizAttempt'
-        db.delete_table(u'django_simplequiz_quizattempt')
+        # Deleting model 'Attempt'
+        db.delete_table(u'django_simplequiz_attempt')
+
+        # Deleting model 'Challenge'
+        db.delete_table(u'django_simplequiz_challenge')
 
 
     models = {
@@ -98,40 +122,59 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        u'django_simplequiz.attempt': {
+            'Meta': {'object_name': 'Attempt'},
+            'finished_at': ('django.db.models.fields.DateTimeField', [], {}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'quiz': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attempts'", 'to': u"orm['django_simplequiz.Quiz']"}),
+            'score': ('django.db.models.fields.FloatField', [], {}),
+            'started_at': ('django.db.models.fields.DateTimeField', [], {}),
+            'time_taken': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['auth.User']"})
+        },
+        u'django_simplequiz.challenge': {
+            'Meta': {'object_name': 'Challenge'},
+            'challenged': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': u"orm['auth.User']"}),
+            'challenged_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'challenged_attempt': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['django_simplequiz.Attempt']"}),
+            'challenger': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': u"orm['auth.User']"}),
+            'challenger_attempt': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['django_simplequiz.Attempt']"}),
+            'declined': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
         u'django_simplequiz.question': {
             'Meta': {'object_name': 'Question'},
-            'answer': ('django.db.models.fields.TextField', [], {}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '255'}),
+            'answer': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '255', 'blank': 'True'}),
             'info': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'name': ('django.db.models.fields.TextField', [], {}),
-            'quiz': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'to': u"orm['django_simplequiz.Quiz']"})
+            'kind': ('django.db.models.fields.CharField', [], {'default': "'plain'", 'max_length': '50'}),
+            'name': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'quiz': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'to': u"orm['django_simplequiz.Quiz']"}),
+            'weight': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'django_simplequiz.quiz': {
             'Meta': {'object_name': 'Quiz'},
             'allow_paging': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'auto_accept': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'created_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'+'", 'null': 'True', 'to': u"orm['auth.User']"}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'end_on_wrong_answer': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'end_on_wrong_answers': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'force_order': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ignore_case': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'ignore_spaces': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mode': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'one_by_one': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'playcount': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'published': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'randomize_order': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'}),
+            'show_answers_on_finish': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
             'time': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
+            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        u'django_simplequiz.quizattempt': {
-            'Meta': {'object_name': 'QuizAttempt'},
-            'finished_at': ('django.db.models.fields.DateTimeField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'score': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'started_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         }
     }
 
