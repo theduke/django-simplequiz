@@ -1,6 +1,11 @@
 from django.contrib import admin
 
+from mptt.admin import MPTTModelAdmin
+
 from .models import *
+
+
+admin.site.register(Category, MPTTModelAdmin)
 
 
 class QuestionInline(admin.TabularInline):
@@ -10,7 +15,7 @@ class QuestionInline(admin.TabularInline):
 class QuizAdmin(admin.ModelAdmin):
   fieldsets = (
     (None, {
-      'fields': ('title', 'slug', 'description', 'tags'),
+      'fields': ('title', 'slug', 'description', 'category', 'tags'),
     }),
     ('Settings', {
       'fields':  ('mode', 'time', 'end_on_wrong_answers', 'force_order', 

@@ -8,6 +8,25 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from taggit.managers import TaggableManager
+from mptt.models import MPTTModel, TreeForeignKey
+
+
+class Category(MPTTModel):
+
+  name = models.CharField(max_length=100, unique=True)
+  description = models.TextField(blank=True)
+
+  parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+
+  class Meta:
+    verbose_name_plural = "Categories"
+
+  class MPTTMeta:
+      order_insertion_by = ['name']
+
+
+  def __unicode__(self):
+    return self.name
 
 
 class Quiz(models.Model):
@@ -24,6 +43,7 @@ class Quiz(models.Model):
   slug = models.SlugField(max_length=255, unique=True)
   description = models.TextField(blank=True)
   tags = TaggableManager(blank=True)
+  category = models.ForeignKey(Category, null=True, blank=True)
 
   mode = models.CharField(max_length=50, choices=MODE_CHOICES)
   time = models.PositiveIntegerField(help_text='How long does a user have time to answer? (SECONDS)')
