@@ -297,7 +297,7 @@
 
       var success = score === maxScore;
 
-      if (success || settings.show_answers_on_finish) {
+      if ((success || settings.show_answers_on_finish) && settings.info) {
         nodeInfo.slideDown();
       }
 

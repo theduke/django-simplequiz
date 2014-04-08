@@ -51,21 +51,36 @@
     border-radius: 20px; }
   .simplequiz .question-wrap {
     padding: 1em;
-    margin: 0.5em;
-    background-color: gainsboro;
+    margin-bottom: 1em;
+    background-color: #f0f0f0;
     border-radius: 20px; }
     .simplequiz .question-wrap .label {
       font-size: 120%; }
     .simplequiz .question-wrap .question {
       font-size: 200%; }
-  .simplequiz .answer-wrap input.answer.success {
-    background: #419641; }
-  .simplequiz .answer-wrap input.answer.fail {
-    background: #f2dede; }
+    .simplequiz .question-wrap .paging {
+      float: right; }
+  .simplequiz .answer-wrap .inner {
+    display: inline-block;
+    padding: 1em;
+    background-color: #f0f0f0;
+    border-radius: 20px; }
+    .simplequiz .answer-wrap .inner .label {
+      font-size: 1em; }
+    .simplequiz .answer-wrap .inner input.answer {
+      font-size: 150%;
+      padding: 0.2em; }
+      .simplequiz .answer-wrap .inner input.answer.success {
+        background: #d3fabb; }
+      .simplequiz .answer-wrap .inner input.answer.fail {
+        background: #f2dede; }
+    .simplequiz .answer-wrap .inner .answer_confirm_info {
+      margin-top: 0.5em;
+      padding-left: 6em; }
   .simplequiz .answers {
     margin: 2em 0 0 0; }
     .simplequiz .answers .question-item.answered {
-      background: #419641; }
+      background: #d3fabb; }
     .simplequiz .answers .question-item.wrong {
       background: #f2dede !important; }
       .simplequiz .answers .question-item.wrong td {

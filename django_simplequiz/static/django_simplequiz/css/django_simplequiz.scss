@@ -1,5 +1,5 @@
 
-$green: #419641;
+$green: #D3FABB;
 $red: #f2dede;
 
 .simplequiz {
@@ -98,9 +98,9 @@ $red: #f2dede;
 
   .question-wrap {
     padding: 1em;
-    margin: 0.5em;
+    margin-bottom: 1em;
 
-    background-color: rgb(220,220,220);
+    background-color: rgb(240,240,240);
     border-radius: 20px;
 
     .label {
@@ -109,15 +109,39 @@ $red: #f2dede;
     .question {
       font-size: 200%;
     }
+
+    .paging {
+      float: right;
+    }
   }
 
   .answer-wrap {
-    input.answer {
-      &.success {
-        background: $green;
+
+    .inner {
+      display: inline-block;
+      padding: 1em;
+      background-color: rgb(240,240,240);
+      border-radius: 20px;
+
+      .label {
+        font-size: 1em;
       }
-      &.fail {
-        background: $red;
+
+      input.answer {
+        font-size: 150%;
+        padding: 0.2em;
+
+        &.success {
+          background: $green;
+        }
+        &.fail {
+          background: $red;
+        }
+      }
+
+      .answer_confirm_info {
+        margin-top: 0.5em;
+        padding-left: 6em;
       }
     }
   }

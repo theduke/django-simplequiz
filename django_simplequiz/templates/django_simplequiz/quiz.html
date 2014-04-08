@@ -86,25 +86,24 @@
   <div class="question-wrap">
     <span class="label">Question:</span>
     <span class="question"></span>
+
+    {% if can_page %}
+    <div class="paging">
+      <button class="btn btn-sm btn-info prev disabled">Prev</button>
+      <button class="btn btn-sm btn-info next disabled">Next</button>
+    </div>      
+    {% endif %}
   </div>
   {% endif %}
   {% if object.mode == "type" %}
   <div class="answer-wrap">
-    <div class="label">
-      Enter answer:<br />
+    <div class="inner">
+      <span class="label">Answer:</span>
+      <input type="text" class="answer" disabled="disabled" />
+      {% if not object.auto_accept %}
+        <div class="answer_confirm_info">(Enter to submit.)</div>
+      {% endif %}
     </div>
-    <input type="text" class="answer" disabled="disabled" />
-    {% if not object.auto_accept %}
-      <span class="anser_confirm_info">(Enter to submit.)</span>
-    {% endif %}
-
-
-    {% if can_page %}
-    <div class="paging">
-      <button class="btn btn-info prev disabled">Prev</button>
-      <button class="btn btn-info next disabled">Next</button>
-    </div>      
-    {% endif %}
   </div>
   {% endif %}
   

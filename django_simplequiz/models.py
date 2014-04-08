@@ -124,7 +124,7 @@ class Quiz(models.Model):
       'show_hints': self.show_hints(questions),
       'show_info': self.show_info(questions),
 
-      'can_page': (self.force_order or self.one_by_one) and self.allow_paging,
+      'can_page': (self.force_order or self.one_by_one or self.mode == self.MODE_CLICK) and self.allow_paging,
 
       'questions': [q.get_json_store() for q in self.get_questions()],
     }
