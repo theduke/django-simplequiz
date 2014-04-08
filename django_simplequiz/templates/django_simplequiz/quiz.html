@@ -23,6 +23,10 @@
           <span class="label">Score:</span>
           <span class="score"></span>
         </div>
+        <div class="mistakes-row">
+          <span class="label">Mistakes:</span>
+          <span class="mistakes"></span>
+        </div>
         <div class="time-row">
           <span class="label">Time:</span>
           <span class="time"></span>
@@ -52,23 +56,32 @@
   <div class="results">
     
   </div>
-  <div class="controls">
-    <button class="btn btn-lg btn-primary start">Start</button>
-    <button class="btn btn-info pause disabled">{{ label_pause }}</button>
-    <button class="btn btn-warning give-up disabled">Give up</button+>
-    <button class="btn btn-lg btn-primary restart disabled">{{ label_restart }}</button>
 
-  </div>
-  <div class="status">
-    <div class="score">
-      <span class="label">Score:</span>
-      <span class="current">0</span> / {{ object.questions.count }}
+  <div class="top-bar">
+    <div class="controls">
+      <button class="btn btn-lg btn-primary start">Start</button>
+      <button class="btn btn-info pause disabled">{{ label_pause }}</button>
+      <button class="btn btn-warning give-up disabled">Give up</button+>
+      <button class="btn btn-lg btn-primary restart disabled">{{ label_restart }}</button>
     </div>
-    <div class="timer">
-      <span class="label">Time left:</span>
-      <span class="time"></span>
+    
+    <div class="status">
+      <div class="score">
+        <span class="label">Score:</span>
+        <span class="current data">0</span> 
+        <span class="data">/ {{ object.questions.count }}</span>
+      </div>
+      <div class="mistakes-row">
+        <span class="label">Mistakes:</span>
+        <span class="data mistakes">0</span>
+      </div>
+      <div class="timer">
+        <span class="label">Time left:</span>
+        <span class="time data"></span>
+      </div>
     </div>
   </div>
+
   {% if object.mode == "click" or object.one_by_one %}
   <div class="question-wrap">
     <span class="label">Question:</span>
@@ -95,10 +108,13 @@
   </div>
   {% endif %}
 
+  <div class="quiz-info"></div>
+
   <div class="answers">
     {% if object.mode == "click" %}
-      {% for question in object.questions.all %}
+      {% for question in object.get_questions %}
       <div class="question-item question-{{ question.id }}" data-id="{{ question.id }}">
+        <div class="answer"></div>
         {% if question.image %}
           <img src="{{ MEDIA_URL }}{{ question.image }}" alt="{{ question.answer }}">
         {% else %}

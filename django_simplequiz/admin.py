@@ -15,7 +15,7 @@ class QuestionInline(admin.TabularInline):
 class QuizAdmin(admin.ModelAdmin):
   fieldsets = (
     (None, {
-      'fields': ('title', 'slug', 'description', 'category', 'tags'),
+      'fields': ('title', 'slug', 'description', 'info', 'category', 'tags'),
     }),
     ('Settings', {
       'fields':  ('mode', 'time', 'end_on_wrong_answers', 'force_order', 

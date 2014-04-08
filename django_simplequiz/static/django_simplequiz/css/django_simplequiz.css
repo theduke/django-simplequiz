@@ -14,6 +14,7 @@
       margin: 0 auto;
       padding: 3em;
       background-color: #ddd;
+      opacity: 1;
       border-radius: 20px; }
       .simplequiz .overlay .inner h3 {
         margin: 0 0 1em 0; }
@@ -22,14 +23,45 @@
     padding: 2em;
     background: #eee;
     cursor: pointer;
-    border-radius: 15px; }
+    border-radius: 15px;
+    margin: 0 1em 1em 0; }
+  .simplequiz .top-bar {
+    margin-bottom: 2em; }
+    .simplequiz .top-bar > div {
+      display: inline-block; }
+    .simplequiz .top-bar .status {
+      margin: 0 0 1em 0; }
+      .simplequiz .top-bar .status > div {
+        display: inline-block;
+        margin: 0 1em 0 0; }
+      .simplequiz .top-bar .status .label {
+        font-size: 120%;
+        font-weight: normal; }
+      .simplequiz .top-bar .status .data {
+        font-size: 200%;
+        font-weight: bold; }
+    .simplequiz .top-bar .controls {
+      margin-right: 2em; }
+      .simplequiz .top-bar .controls .give-up {
+        margin-right: 1em; }
+  .simplequiz .question-wrap {
+    padding: 1em;
+    margin: 0.5em;
+    background-color: gainsboro;
+    border-radius: 20px; }
+    .simplequiz .question-wrap .label {
+      font-size: 120%; }
+    .simplequiz .question-wrap .question {
+      font-size: 200%; }
   .simplequiz .answer-wrap input.answer.success {
     background: #419641; }
   .simplequiz .answer-wrap input.answer.fail {
     background: #f2dede; }
-  .simplequiz .answers .question-item.answered {
-    background: #419641; }
-  .simplequiz .answers .question-item.wrong {
-    background: #f2dede !important; }
-    .simplequiz .answers .question-item.wrong td {
+  .simplequiz .answers {
+    margin: 2em 0 0 0; }
+    .simplequiz .answers .question-item.answered {
+      background: #419641; }
+    .simplequiz .answers .question-item.wrong {
       background: #f2dede !important; }
+      .simplequiz .answers .question-item.wrong td {
+        background: #f2dede !important; }

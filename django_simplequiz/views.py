@@ -124,6 +124,7 @@ def save_attempt(request):
     attempt.finished_at = dateutil.parser.parse(request.POST.get('finished_at'))
     attempt.time_taken = int(float(request.POST.get('time_taken')))
     attempt.score = float(request.POST.get('score'))
+    attempt.mistakes = int(request.POST.get('mistakes'))
 
     if request.user.is_authenticated:
         attempt.user = request.user

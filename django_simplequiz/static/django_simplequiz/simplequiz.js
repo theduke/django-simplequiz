@@ -18,6 +18,8 @@
         nodeQuestion = node.find('.question'),
         nodeOverlay = node.find('.overlay'),
         nodeOverlayInner = nodeOverlay.find('.inner'),
+        nodeInfo = node.find('.quiz-info'),
+        nodeMistakes = node.find('.mistakes'),
 
         nodeResults = node.find('.results'),
 
@@ -291,6 +293,12 @@
 
       clearInterval(timerHandle);
 
+      var success = score === maxScore;
+
+      if (success || settings.show_answers_on_finish) {
+        nodeInfo.html(settings.info);
+      }
+
       for (var i = 0; i < settings.questions.length; i++) {
         var question = settings.questions[i];
         if (!('answered' in question)) {
@@ -327,12 +335,13 @@
 
 
       var data = {
-        'csrfmiddlewaretoken': settings.csrf,
-        'id': settings.id,
-        'started_at': started.toISOString(),
-        'finished_at': finished.toISOString(),
-        'time_taken': time_taken / 1000,
-        'score': score / maxScore  
+        csrfmiddlewaretoken: settings.csrf,
+        id: settings.id,
+        started_at: started.toISOString(),
+        finished_at: finished.toISOString(),
+        time_taken: time_taken / 1000,
+        score: score / maxScore,
+        mistakes: wrong_answers
       };
 
       $.ajax({
@@ -344,6 +353,7 @@
           nodeOverlay.find('.results').show();
 
           nodeOverlay.find('.score').html(data.score * 100 + '%');
+          nodeOverlay.find('.mistakes').html(wrong_answers);
           nodeOverlay.find('.time').html(renderTime(Math.floor(time_taken / 1000)));
           nodeOverlay.find('.position').html(data.pos + ' / ' + data.attempts);
 
@@ -371,6 +381,10 @@
 
 
     function onType(enter) {
+      if (!started || isPaused()) {
+        return;
+      }
+
       var val = nodeAnswer.val();
 
       var valid = onAnswer(null, val, !enter);
@@ -396,6 +410,10 @@
     }
 
     function onClicked(item) {
+      if (!started || isPaused()) {
+        return;
+      }
+
       var answer_id = parseInt(item.attr('data-id'));
 
       var valid = onAnswer(answer_id);
@@ -538,6 +556,7 @@
         // Invalid.
         if (!no_wrong_count) {
           wrong_answers += 1;
+          nodeMistakes.html(wrong_answers);
 
           if (settings.end_on_wrong_answers) {
             // If only a limited amount of wrong answers is allowed,

@@ -42,6 +42,7 @@ class Quiz(models.Model):
   title = models.CharField(max_length=80, unique=True)
   slug = models.SlugField(max_length=255, unique=True)
   description = models.TextField(blank=True)
+  info = models.TextField(blank=True, help_text='Info that will only be shown once the user has finished the Quiz. Only shown on fail if show ansers on finish is enabled.')
   tags = TaggableManager(blank=True)
   category = models.ForeignKey(Category, null=True, blank=True)
 
@@ -106,6 +107,7 @@ class Quiz(models.Model):
       'id': self.id,
       'title': escape(self.title),
       'description': escape(self.description),
+      'info': escape(self.info),
       'mode': self.mode,
       'time': self.time,
       'end_on_wrong_answers': self.end_on_wrong_answers,
@@ -130,7 +132,8 @@ class Quiz(models.Model):
     return json.dumps(store) if as_string else store
 
   def get_questions(self):
-    return self.questions.all().order_by('weight')
+    order = '?' if self.randomize_order else 'weight'
+    return self.questions.all().order_by(order)
 
 
 class Question(models.Model):
@@ -163,13 +166,12 @@ class Question(models.Model):
 
 
   def clean(self):
-    if not (self.answer or self.file):
+    if not (self.answer or self.image):
       raise ValidationError("Either answer or file have to be specified.")
 
 
   def get_answer(self):
     return []
-
 
 
   def get_json_store(self):
@@ -193,6 +195,7 @@ class Attempt(models.Model):
   finished_at = models.DateTimeField()
   time_taken = models.PositiveIntegerField()
   score = models.FloatField(help_text='Score in percent')
+  mistakes = models.PositiveIntegerField()
 
 
   def verbose_score(self):
