@@ -8,6 +8,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 
 
 from django_baseline import get_or_create_csrf_token
@@ -22,6 +23,23 @@ def dashboard(request):
         'attempts': Attempt.objects.filter(user_id=request.user.id).select_related('quiz').order_by('-finished_at'),
         'challenges': Challenge.get_challenges(request.user.id)
     })
+
+
+def discover(request):
+    """
+    Discover quizzes.
+    """
+
+    qs = Quiz.objects.filter(published=True).annotate(num_attempts=Count('attempts'))
+
+    return render(request, 'django_simplequiz/discover.html', {
+        'page_title': 'Discover Quizzes',
+        'head_title': 'Discover Quizzes',
+
+        'most_played': qs.order_by('-num_attempts')[:20],
+        'new': qs.order_by('-created_at')[:20]
+    })
+
 
 
 class QuizDetailView(DetailView):

@@ -8,6 +8,7 @@ urlpatterns = patterns('django_simplequiz.views',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^dashboard$', 'dashboard', name="quiz_dashboard"),
+    url(r'^discover$', 'discover', name="simplequiz_discover"),
 
     url(r'^quiz-attempt/save$', 'save_attempt', name="quiz_save_attempt"),
     #url(r'^quiz/(?P<pk>\d+)/my-attempts$', AttemptListView.as_view(), name="quiz_attempts"),
