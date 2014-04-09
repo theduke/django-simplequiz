@@ -35,6 +35,20 @@ $red: #f2dede;
       h3 {
         margin: 0 0 1em 0;
       }
+
+      .results {
+        .data-row {
+          .label {
+            font-size: 120%;
+            font-weight: normal;
+          }
+
+          .data {
+            font-size: 200%;
+            font-weight: bold;
+          }
+        }
+      }
     }
   }
 
@@ -150,9 +164,12 @@ $red: #f2dede;
     margin: 2em 0 0 0;
 
     .answers-table {
-      td {
-        padding: 0 1em;
-        line-height: 1em;
+      tr {
+        height: 1.2em;
+              
+        td {
+          padding: 0 1em;
+        }
       }
     }
 

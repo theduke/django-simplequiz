@@ -195,6 +195,7 @@ class Attempt(models.Model):
   finished_at = models.DateTimeField()
   time_taken = models.PositiveIntegerField()
   score = models.FloatField(help_text='Score in percent')
+  right_answers = models.PositiveIntegerField()
   mistakes = models.PositiveIntegerField()
 
 

@@ -125,6 +125,7 @@ def save_attempt(request):
     attempt.time_taken = int(float(request.POST.get('time_taken')))
     attempt.score = float(request.POST.get('score'))
     attempt.mistakes = int(request.POST.get('mistakes'))
+    attempt.right_answers = int(request.POST.get('right_answers'))
 
     if request.user.is_authenticated:
         attempt.user = request.user

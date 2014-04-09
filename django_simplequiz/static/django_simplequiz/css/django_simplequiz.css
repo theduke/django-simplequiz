@@ -18,6 +18,12 @@
       border-radius: 20px; }
       .simplequiz .overlay .inner h3 {
         margin: 0 0 1em 0; }
+      .simplequiz .overlay .inner .results .data-row .label {
+        font-size: 120%;
+        font-weight: normal; }
+      .simplequiz .overlay .inner .results .data-row .data {
+        font-size: 200%;
+        font-weight: bold; }
   .simplequiz.quiz-click .answers .question-item {
     display: inline-block;
     padding: 2em;
@@ -79,9 +85,10 @@
       padding-left: 6em; }
   .simplequiz .answers {
     margin: 2em 0 0 0; }
-    .simplequiz .answers .answers-table td {
-      padding: 0 1em;
-      line-height: 1em; }
+    .simplequiz .answers .answers-table tr {
+      height: 1.2em; }
+      .simplequiz .answers .answers-table tr td {
+        padding: 0 1em; }
     .simplequiz .answers .question-item.answered {
       background: #d3fabb; }
     .simplequiz .answers .question-item.wrong {

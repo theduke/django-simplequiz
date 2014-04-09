@@ -335,6 +335,8 @@
       nodeOverlay.find('.preloader').show();
       nodeOverlay.find('.results').hide();
 
+      var origScore = score;
+
 
       var data = {
         csrfmiddlewaretoken: settings.csrf,
@@ -343,7 +345,8 @@
         finished_at: finished.toISOString(),
         time_taken: time_taken / 1000,
         score: score / maxScore,
-        mistakes: wrong_answers
+        mistakes: wrong_answers,
+        right_answers: score
       };
 
       $.ajax({
@@ -354,7 +357,9 @@
           nodeOverlay.find('.preloader').hide();
           nodeOverlay.find('.results').show();
 
-          nodeOverlay.find('.score').html(data.score * 100 + '%');
+          var score = origScore + ' / ' + maxScore + ' (' + Math.floor(origScore/maxScore * 100) + '%)';
+
+          nodeOverlay.find('.score').html(score);
           nodeOverlay.find('.mistakes').html(wrong_answers);
           nodeOverlay.find('.time').html(renderTime(Math.floor(time_taken / 1000)));
           nodeOverlay.find('.position').html(data.pos + ' / ' + data.attempts);
