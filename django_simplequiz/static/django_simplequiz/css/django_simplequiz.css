@@ -80,7 +80,8 @@
   .simplequiz .answers {
     margin: 2em 0 0 0; }
     .simplequiz .answers .answers-table td {
-      padding: 0 1em; }
+      padding: 0 1em;
+      line-height: 1em; }
     .simplequiz .answers .question-item.answered {
       background: #d3fabb; }
     .simplequiz .answers .question-item.wrong {
