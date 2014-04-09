@@ -149,6 +149,12 @@ $red: #f2dede;
   .answers {
     margin: 2em 0 0 0;
 
+    .answers-table {
+      td {
+        padding: 0 1em;
+      }
+    }
+
     .question-item {
       &.answered {
         background: $green;
