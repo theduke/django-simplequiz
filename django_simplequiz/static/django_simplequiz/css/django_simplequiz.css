@@ -1,5 +1,7 @@
 .simplequiz {
   position: relative; }
+  .simplequiz .description {
+    margin-bottom: 2em; }
   .simplequiz .label {
     color: black; }
   .simplequiz .overlay {
@@ -18,6 +20,8 @@
       border-radius: 20px; }
       .simplequiz .overlay .inner h3 {
         margin: 0 0 1em 0; }
+      .simplequiz .overlay .inner .results .data {
+        margin-bottom: 1.5em; }
       .simplequiz .overlay .inner .results .data-row .label {
         font-size: 120%;
         font-weight: normal; }
@@ -32,7 +36,7 @@
     border-radius: 15px;
     margin: 0 1em 1em 0; }
   .simplequiz .top-bar {
-    margin-bottom: 2em; }
+    margin-bottom: 1em; }
     .simplequiz .top-bar > div {
       display: inline-block; }
     .simplequiz .top-bar .status {

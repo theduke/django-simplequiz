@@ -19,42 +19,46 @@
 
       <img src="{{ STATIC_URL }}django_simplequiz/preloader.gif" class="preloader" style="display: none;" alt="">
       <div class="results" style="display: none;">
-        <div class="score-row data-row">
-          <span class="label">Score:</span>
-          <span class="score data"></span>
+        <div class="data">
+          <div class="score-row data-row">
+            <span class="label">Score:</span>
+            <span class="score data"></span>
+          </div>
+          <div class="mistakes-row data-row">
+            <span class="label">Mistakes:</span>
+            <span class="mistakes data"></span>
+          </div>
+          <div class="time-row data-row">
+            <span class="label">Time:</span>
+            <span class="time data"></span>
+          </div>
+          <div class="position-row data-row">
+            <span class="label">Ranking:</span>
+            <span class="position data"></span>
+          </div>
+          <div class="personal-position-row data-row">
+            <span class="label">Personal Ranking:</span>
+            <span class="personal-position data"></span>
+          </div>
+          
+          <div class="register-info" style="display: none;">
+            <p>
+              To save your results, 
+              <a href="{% url "account_login" %}" class="btn btn-info">Login</a> or
+              <a href="{% url "account_signup" %}" class="btn btn-info">Register</a>.
+            </p>
+          </div>
         </div>
-        <div class="mistakes-row data-row">
-          <span class="label">Mistakes:</span>
-          <span class="mistakes data"></span>
-        </div>
-        <div class="time-row data-row">
-          <span class="label">Time:</span>
-          <span class="time data"></span>
-        </div>
-        <div class="position-row data-row">
-          <span class="label">Ranking:</span>
-          <span class="position data"></span>
-        </div>
-        <div class="personal-position-row data-row">
-          <span class="label">Personal Ranking:</span>
-          <span class="personal-position data"></span>
-        </div>
-        <div class="register-info" style="display: none;">
-          <p>
-            To save your results, 
-            <a href="{% url "account_login" %}" class="btn btn-info">Login</a> or
-            <a href="{% url "account_signup" %}" class="btn btn-info">Register</a>.
-          </p>
-        </div>
+
         <button class="btn btn-lg btn-success closer">Close</button>
       </div>
     </div>
   </div>
 
-
-  <div class="description"></div>
-  <div class="results">
-    
+  
+  <div class="description-row">
+    <h4>Description</h4>
+    <div class="description">{{ object.description }}</div>
   </div>
 
   <div class="top-bar">

@@ -5,6 +5,10 @@ $red: #f2dede;
 .simplequiz {
   position: relative;
 
+  .description {
+    margin-bottom: 2em;
+  }
+
   .label {
     color: black;
   }
@@ -37,6 +41,10 @@ $red: #f2dede;
       }
 
       .results {
+        .data {
+          margin-bottom: 1.5em;
+        }
+        
         .data-row {
           .label {
             font-size: 120%;
@@ -68,7 +76,7 @@ $red: #f2dede;
   }
 
   .top-bar {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 
     & > div {
       display: inline-block;
