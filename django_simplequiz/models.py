@@ -14,7 +14,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Category(MPTTModel):
 
   name = models.CharField(max_length=100, unique=True)
-  slug = models.SlugField(null=True, blank=True)
+  slug = models.SlugField(unique=True)
   description = models.TextField(blank=True)
 
   parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
