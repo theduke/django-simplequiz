@@ -37,7 +37,7 @@ def discover(request):
       .annotate(num_attempts=Count('attempts', distinct=True))
 
     most_played = get_quiz_list_data(qs.order_by('-num_attempts'), request.user, limit=15)
-    new = get_quiz_list_data(qs.order_by('-created_at')[:10], request.user, limit=15)
+    new = get_quiz_list_data(qs.order_by('-created_at'), request.user, limit=15)
 
     return render(request, 'django_simplequiz/discover.html', {
         'page_title': 'Discover Quizzes',
