@@ -14,6 +14,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Category(MPTTModel):
 
   name = models.CharField(max_length=100, unique=True)
+  slug = models.SlugField(null=True, blank=True)
   description = models.TextField(blank=True)
 
   parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
@@ -190,7 +191,7 @@ class Question(models.Model):
       raise ValidationError("Either answer or file have to be specified.")
 
     if self.quiz.force_order:
-      if not self.answer:
+      if not self.name:
         raise ValidationError('When "Force order" is enabled, every question needs to have a "Question/Hint".')
 
 

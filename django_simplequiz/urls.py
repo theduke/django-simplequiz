@@ -10,6 +10,9 @@ urlpatterns = patterns('django_simplequiz.views',
     url(r'^dashboard$', 'dashboard', name="quiz_dashboard"),
     url(r'^discover$', 'discover', name="simplequiz_discover"),
 
+    url(r'^quizzes$', QuizListView.as_view(), name='quiz_list'),
+    url(r'^quizzes/(?P<category>\w+)$', QuizListView.as_view(), name='quiz_list_categorized'),
+
     url(r'^quiz-attempt/save$', 'save_attempt', name="quiz_save_attempt"),
     #url(r'^quiz/(?P<pk>\d+)/my-attempts$', AttemptListView.as_view(), name="quiz_attempts"),
 

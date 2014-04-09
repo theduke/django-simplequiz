@@ -8,7 +8,10 @@ from .models import *
 # Category #
 #############
 
-admin.site.register(Category, MPTTModelAdmin)
+class CategoryAdmin(MPTTModelAdmin):
+  prepopulated_fields = {'slug': ('name',)}
+
+admin.site.register(Category, CategoryAdmin)
 
 ########
 # Quiz #
