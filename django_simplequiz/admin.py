@@ -21,16 +21,25 @@ class QuestionInline(admin.TabularInline):
 class QuizAdmin(admin.ModelAdmin):
   fieldsets = (
     (None, {
-      'fields': ('title', 'slug', 'description', 'info', 'category', 'tags'),
+      'fields': ('title', 'slug', 'description', 'cover_image'),
     }),
-    ('Settings', {
-      'fields':  ('mode', 'time', 'end_on_wrong_answers', 'force_order', 
-                  'allow_paging', 'randomize_order', 'one_by_one',
-                  'ignore_case', 'ignore_spaces', 'auto_accept',
-                  'show_answers_on_finish', 'move_answered_to_bottom', 'move_active_to_top'),
+    ('Meta', {
+      'fields': ('category', 'tags'),
     }),
-    ('Publishing', {
-      'fields': ('published',)
+    ('State', {
+      'fields': ('published', 'verified', 'featured'),
+    }),
+    ('Base settings', {
+      'fields':  ('mode', 'time', 'info')
+    }),
+    ('Flow', {
+      'fields': ('one_by_one', 'force_order', 'allow_paging', 'randomize_order', 'end_on_wrong_answers')
+    }),
+    ('TYPING Quiz', {
+      'fields': ('ignore_case', 'ignore_spaces', 'auto_accept')
+    }),
+    ('Interface', {
+      'fields': ('move_answered_to_bottom', 'move_active_to_top', 'show_answers_on_finish')
     })
   )
   prepopulated_fields = {'slug': ('title',)}

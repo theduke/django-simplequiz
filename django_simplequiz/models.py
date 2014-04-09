@@ -42,36 +42,44 @@ class Quiz(models.Model):
   title = models.CharField(max_length=80, unique=True)
   slug = models.SlugField(max_length=255, unique=True)
   description = models.TextField(blank=True)
-  info = models.TextField(blank=True, help_text='Info that will only be shown once the user has finished the Quiz. Only shown on fail if show ansers on finish is enabled.')
+  cover_image = models.ImageField(max_length=255, upload_to="simplequiz/cover_images", blank=True)
+
+  # Meta fields.
   tags = TaggableManager(blank=True)
   category = models.ForeignKey(Category, null=True, blank=True)
+  
+  # State fields. 
+  published = models.BooleanField(default=False)
+  verified = models.BooleanField(default=False, help_text='Whether this quiz was verified to be correct by the site operator.')
+  featured = models.BooleanField(default=False, help_text='Whether this quiz appears as featured.')
 
+  # Base settings.
   mode = models.CharField(max_length=50, choices=MODE_CHOICES)
   time = models.PositiveIntegerField(help_text='How long does a user have time to answer? (SECONDS)')
 
-  end_on_wrong_answers = models.PositiveIntegerField(default=0, help_text='If greater than 0, the quiz will fail if the user gives as many wrong answers as specified.')
-
+  # Flow.
+  one_by_one = models.BooleanField(default=False, help_text='If enabled, only one question is shown at a time. Otherwise, all questions are shown at one. (No effect for clickable quiz)')
   force_order = models.BooleanField(default=False, help_text='Force the questions the be asked in a fixed order.')
   allow_paging = models.BooleanField(default=True, help_text='Allow the user to switch between questions (Only relevant if "Force order" is enabled).')
   randomize_order = models.BooleanField(default=False, help_text='Show questions or hints in a random order.')
-  one_by_one = models.BooleanField(default=False, help_text='If enabled, only one question is shown at a time. Otherwise, all questions are shown at one. (No effect for clickable quiz)')
+  end_on_wrong_answers = models.PositiveIntegerField(default=0, help_text='If greater than 0, the quiz will fail if the user gives as many wrong answers as specified.')
 
-  move_answered_to_bottom = models.BooleanField(default=False, help_text='Move an answered item to the bottom of the question to list to make it easier to see the unanswered ones. Useful for long lists. Has no effect in one by one mode!')
-  move_active_to_top = models.BooleanField(default=False, help_text='Move the active question to the top of the question/answer list. Makes it easy to spot the active question on long lists. Has no effect in click mode or for one by one.')
-
+  # Answer handling.
   ignore_case = models.BooleanField(default=True, help_text='Ignore the case of answers.')
   ignore_spaces = models.BooleanField(default=True, help_text='Ignore spaces in answers.')
   auto_accept = models.BooleanField(default=True, help_text='Only for TYPING: If enabled, a typed answer that is correct is automatically accepted. Otherwise, the user has to confirm with enter.')
 
+  # Interface settings.
+  move_answered_to_bottom = models.BooleanField(default=False, help_text='Move an answered item to the bottom of the question to list to make it easier to see the unanswered ones. Useful for long lists. Has no effect in one by one mode!')
+  move_active_to_top = models.BooleanField(default=False, help_text='Move the active question to the top of the question/answer list. Makes it easy to spot the active question on long lists. Has no effect in click mode or for one by one.')
   show_answers_on_finish = models.BooleanField(default=True, help_text='If disabled, the user will not see the correct answers for the questions that were not answered correctly.')
 
-  published = models.BooleanField(default=False)
+  info = models.TextField(blank=True, help_text='Info that will only be shown once the user has finished the Quiz. Only shown on fail if show ansers on finish is enabled.')
 
+  # Meta info.
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   created_by = models.ForeignKey(User, null=True, blank=True, related_name='+')
-
-  playcount = models.PositiveIntegerField(default=0)
 
 
   class Meta:
@@ -87,7 +95,14 @@ class Quiz(models.Model):
 
 
   def clean(self):
-    pass
+    if self.mode == self.MODE_CLICK:
+      self.one_by_one = True
+      self.force_order = True
+      self.move_answered_to_bottom = False
+      self.move_active_to_top = False
+
+    if self.one_by_one:
+      self.force_order = True
 
 
   def show_hints(self, questions=None):
@@ -173,6 +188,10 @@ class Question(models.Model):
   def clean(self):
     if not (self.answer or self.image):
       raise ValidationError("Either answer or file have to be specified.")
+
+    if self.quiz.force_order:
+      if not self.answer:
+        raise ValidationError('When "Force order" is enabled, every question needs to have a "Question/Hint".')
 
 
   def get_answer(self):
