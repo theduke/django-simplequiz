@@ -135,6 +135,8 @@
             <th>Info</th> 
           {% endif %}
         </tr>
+
+        <tr class="top" style="display: none;"></tr>
         
         {% for question in object.get_questions %}
         <tr class="question-item question-{{ question.id }}" class="{{ object.one_by_one|yesno:"hidden,visible" }}">

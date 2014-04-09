@@ -106,8 +106,6 @@
         nextQuestion();
       }
 
-
-
       // Remove start button.
       nodeStart.fadeOut(function() {
         nodeStart.remove();
@@ -158,8 +156,31 @@
         nodeQuestion.html(question.name);
       }
       else {
+        // Remove all old "active" classes.
         nodeAnswers.find('.question-item').removeClass('active');
-        nodeAnswers.find('.question-' + question.id).addClass('active');
+
+        // Add active class to new active question. 
+        var item = nodeAnswers.find('.question-' + question.id)
+        item.addClass('active');
+
+        if (settings.move_active_to_top) {
+          // The move_active_to_top functionality either moves the 
+          // question-item to the very beginning of the parent container,
+          // or inserts it after an element with the class "top".
+          // This is needed for tables, where moving to the real top 
+          // would move the table header down.
+          // This requires that the table has something like a :
+          // <tr class="top" style="display: none;"></tr>.
+
+          var top = nodeAnswers.find('.top');
+
+          if (top.size()) {
+            item.insertAfter(top);
+          }
+          else {
+            item.prepentTo(item.parent());
+          }
+        }
       }
 
       current_question_index = index;
@@ -558,6 +579,18 @@
             nextQuestion()
           }
         }
+
+        // If enabled by move_answers_to_bottom, the 
+        // just answered .question-item will be moved to 
+        // the bottom of the container to make it easier to 
+        // see the unanswered questions in long quizzes.
+        if (settings.move_answered_to_bottom) {
+          if (settings.mode === 'type' && !settings.one_by_one) {
+            var node = nodeAnswers.find('.question-' + question.id);
+            node.appendTo(node.parent());
+          }
+        }
+
       }
       else {
         // Invalid.

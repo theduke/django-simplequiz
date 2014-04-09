@@ -56,6 +56,9 @@ class Quiz(models.Model):
   randomize_order = models.BooleanField(default=False, help_text='Show questions or hints in a random order.')
   one_by_one = models.BooleanField(default=False, help_text='If enabled, only one question is shown at a time. Otherwise, all questions are shown at one. (No effect for clickable quiz)')
 
+  move_answered_to_bottom = models.BooleanField(default=False, help_text='Move an answered item to the bottom of the question to list to make it easier to see the unanswered ones. Useful for long lists. Has no effect in one by one mode!')
+  move_active_to_top = models.BooleanField(default=False, help_text='Move the active question to the top of the question/answer list. Makes it easy to spot the active question on long lists. Has no effect in click mode or for one by one.')
+
   ignore_case = models.BooleanField(default=True, help_text='Ignore the case of answers.')
   ignore_spaces = models.BooleanField(default=True, help_text='Ignore spaces in answers.')
   auto_accept = models.BooleanField(default=True, help_text='Only for TYPING: If enabled, a typed answer that is correct is automatically accepted. Otherwise, the user has to confirm with enter.')
@@ -118,6 +121,8 @@ class Quiz(models.Model):
       'ignore_case': self.ignore_case,
       'ignore_spaces': self.ignore_spaces,
       'auto_accept': self.auto_accept,
+      'move_answered_to_bottom': self.move_answered_to_bottom,
+      'move_active_to_top': self.move_active_to_top,
 
       'show_answers_on_finish': self.show_answers_on_finish,
 

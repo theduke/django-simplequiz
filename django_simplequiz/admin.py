@@ -19,7 +19,9 @@ class QuizAdmin(admin.ModelAdmin):
     }),
     ('Settings', {
       'fields':  ('mode', 'time', 'end_on_wrong_answers', 'force_order', 
-                  'allow_paging', 'randomize_order', 'one_by_one', 'ignore_case', 'ignore_spaces', 'auto_accept', 'show_answers_on_finish'),
+                  'allow_paging', 'randomize_order', 'one_by_one',
+                  'ignore_case', 'ignore_spaces', 'auto_accept',
+                  'show_answers_on_finish', 'move_answered_to_bottom', 'move_active_to_top'),
     }),
     ('Publishing', {
       'fields': ('published',)
