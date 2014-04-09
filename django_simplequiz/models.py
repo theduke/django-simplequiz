@@ -265,3 +265,24 @@ class QuizLike(models.Model):
 
   class Meta:
     unique_together = (('quiz', 'user'),)
+
+
+class Complaint(models.Model):
+  """
+  A complaint by a user about a quiz.
+  Might be a suggestions or report of an error.
+  """
+
+  quiz = models.ForeignKey(Quiz)
+  user = models.ForeignKey(User, blank=True, null=True)
+
+  subject = models.CharField(max_length=255)
+  message = models.TextField()
+  email = models.EmailField(help_text='Email for contact.', blank=True)
+
+  handled = models.BooleanField(default=False, help_text='Whether the issue was dealt with.')
+
+
+  def __unicode__(self):
+    return self.subject
+

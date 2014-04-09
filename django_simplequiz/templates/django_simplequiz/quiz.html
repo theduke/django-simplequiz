@@ -158,6 +158,11 @@
     {% endif %}
   </div>
 
+  <div class="complain">
+    <p>Have you found an error in this quiz, or have any suggestions on how to improve it?</p>
+    <a href="{% url "simplequiz_complain" %}?quiz-id={{ object.id }}" class="btn btn-warning">Let us know</a>
+  </div>
+
 </div>
 {% endblock content %}
 

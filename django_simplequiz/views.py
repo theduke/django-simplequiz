@@ -1,19 +1,22 @@
 import json
 import dateutil.parser
 
-from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
+from django.views.generic import DetailView, ListView, CreateView
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http.response import HttpResponse
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.db.models import Count
+from django.contrib.messages.views import SuccessMessageMixin
 
+from captcha.fields import CaptchaField
 
 from django_baseline import get_or_create_csrf_token
 
 from .models import *
+from .forms import ComplaintForm
 
 
 @login_required
@@ -112,9 +115,6 @@ class QuizDetailView(DetailView):
     return context
 
 
-
-
-
 @require_http_methods(["POST"])
 def save_attempt(request):
     quiz = get_object_or_404(Quiz, pk=request.POST.get('id'))
@@ -150,3 +150,41 @@ def save_attempt(request):
     #import ipdb; ipdb.set_trace()
 
     return HttpResponse(json.dumps(answer), content_type="application/json")
+
+
+class ComplaintCreateView(SuccessMessageMixin, CreateView):
+
+    model = Complaint
+    form_class = ComplaintForm
+    template_name = "django_simplequiz/complaint.html"
+    success_message = "Your complaint or suggestion was received and will be processed shortly."
+
+
+    def get_form(self, form_class):
+        form = super(ComplaintCreateView, self).get_form(form_class)
+
+        if self.request.user.is_anonymous():
+            form.fields['captcha'] = CaptchaField()
+
+        return form 
+
+
+    def get_initial(self):
+        init = super(ComplaintCreateView, self).get_initial()
+
+        if self.request.user.is_authenticated():
+            init['email'] = self.request.user.email
+
+        if self.request.method == "GET":
+            quiz_id = self.request.GET.get('quiz-id')
+
+            if not quiz_id:
+                raise Exception("No quiz id supplied")
+
+            init['quiz'] = get_object_or_404(Quiz, id=quiz_id)
+
+        return init
+
+
+    def get_success_url(self):
+        return reverse('quiz', kwargs={'pk': self.object.quiz_id})

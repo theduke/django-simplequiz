@@ -18,6 +18,8 @@ setup(
         'django-taggit >= 0.11',
         'django-mptt',
         'python-dateutil',
+        'django-crispy-forms',
+        'django-simple-captcha',
     ],
     license = 'BSD License',
     description = 'Convenienve functionality for Django projects.',

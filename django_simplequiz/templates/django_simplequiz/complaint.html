@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block page_title %}Complaint{% endblock page_title %}
+{% block head_title %}Complaint{% endblock head_title %}
+{% block content %}
+<div class="complaint-form">
+  {% crispy form %}
+</div> 
+{% endblock content %}

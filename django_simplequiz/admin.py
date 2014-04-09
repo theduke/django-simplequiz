@@ -4,9 +4,15 @@ from mptt.admin import MPTTModelAdmin
 
 from .models import *
 
+#############
+# Category #
+#############
 
 admin.site.register(Category, MPTTModelAdmin)
 
+########
+# Quiz #
+########
 
 class QuestionInline(admin.TabularInline):
   model = Question
@@ -39,3 +45,13 @@ class QuizAdmin(admin.ModelAdmin):
     obj.save()
 
 admin.site.register(Quiz, QuizAdmin)
+
+#############
+# Complaint #
+#############
+
+class ComplaintAdmin(admin.ModelAdmin):
+  readonly_fields = ('quiz', 'subject', 'message', 'email', 'user')
+  list_display = ('subject', 'quiz', 'user', 'handled')
+
+admin.site.register(Complaint, ComplaintAdmin)
