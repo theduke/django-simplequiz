@@ -111,7 +111,10 @@
         nodeStart.remove();
       });
 
-
+      // Jump to input box for typed quiz.
+      if (settings.mode === "type") {
+        nodeAnswer.focus();
+      }
     }
 
     function restart() {
