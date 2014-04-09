@@ -10,37 +10,28 @@
     <div class="col-md-4 most-played">
       <h3>Most played</h3>
 
-      <ul>
-        {% for quiz in most_played %}
-          <li class="quiz">
-            {% include "django_simplequiz/quiz_list_item.html" %}
-          </li>
-        {% endfor %}
-      </ul>
+      {% include "django_simplequiz/quiz_table_small.html" with items=most_played %}
     </div>
 
 
     <div class="col-md-4">
       <h3>New</h3>
       
+      {% include "django_simplequiz/quiz_table_small.html" with items=new %}
+    </div>
+    
+    <div class="col-md-4">
+      <h3>Categories</h3>
+
       <ul>
-        {% for quiz in new %}
-          <li class="quiz">
-             {% include "django_simplequiz/quiz_list_item.html" %}
-          </li>
+        {% for cat in categories %}
+        <li>
+          <a href="{% url "quiz_list_categorized" category=cat.slug %}">{{ cat.name }}</a>
+        </li>
         {% endfor %}
       </ul>
     </div>
   </div>
 
-  <div class="col-md-4">
-    <h3>Categories</h3>
-
-    <ul>
-      {% for cat in categories %}
-
-      {% endfor %}
-    </ul>
-  </div>
 </div> 
 {% endblock content %}

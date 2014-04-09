@@ -34,20 +34,10 @@ def discover(request):
     """
 
     qs = Quiz.objects.filter(published=True)\
-      .annotate(num_attempts=Count('attempts', distinct=True))\
-      .annotate(num_likes=Count('likes', distinct=True))
+      .annotate(num_attempts=Count('attempts', distinct=True))
 
-    most_played = qs.order_by('-num_attempts')[:20]
-    new = qs.order_by('-created_at')[:20]
-
-    # Collect likes for all displayed quizzes to prevent extra queries.
-    ids = [x.id for x in most_played] + [x.id for x in new]
-    likes = QuizLike.objects.filter(user=request.user, id__in=ids).values_list('quiz_id')
-    likes = [x[0] for x in likes]
-
-    # Also get the players best score.
-    scores = Attempt.objects.filter(user=request.user, quiz_id__in=ids).order_by('-score')
-    
+    most_played = get_quiz_list_data(qs.order_by('-num_attempts'), request.user, limit=15)
+    new = get_quiz_list_data(qs.order_by('-created_at')[:10], request.user, limit=15)
 
     return render(request, 'django_simplequiz/discover.html', {
         'page_title': 'Discover Quizzes',
@@ -55,12 +45,11 @@ def discover(request):
 
         'most_played': most_played,
         'new': new,
-
-        'likes': likes,
+        'categories': Category.objects.order_by('name')
     })
 
 
-def get_quiz_list_data(queryset, user):
+def get_quiz_list_data(queryset, user, limit=None):
     """
     Get all the relevant data for displaying a list of quizzes,
     including number of likes, number of attempts,
@@ -89,11 +78,15 @@ def get_quiz_list_data(queryset, user):
         for row in max_scores:
             if not (row[0] in score_map):
                 score_map[row[0]] = row[1]
-        
+
         # Collect likes for all displayed quizzes to prevent extra queries.
-        likes = QuizLike.objects.filter(user=user, id__in=qs.only('id').all()).values_list('quiz_id', flat=True)
+        likes = QuizLike.objects.filter(user=user, id__in=qs.only('id')).values_list('quiz_id', flat=True)
 
     items = []
+
+    if limit:
+        qs = qs[:limit]
+
     for obj in qs:
         items.append({
             'object': obj,
@@ -119,6 +112,7 @@ class QuizListView(ListView):
         if category:
             category = get_object_or_404(Category, slug=category)
             qs = qs.filter(category=category)
+            self.page_title = "Quizzes: " + category.name
 
         return qs
 

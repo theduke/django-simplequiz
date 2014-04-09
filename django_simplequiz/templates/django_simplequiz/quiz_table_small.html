@@ -1,0 +1,19 @@
+<div class="quiz-table-wrap">
+    <table class="table quiz-list-small">
+      <tr>
+        <th>Name</th>
+        <th>Plays</th>
+      </tr>
+
+      {% for item in items %}
+        <tr>
+          <td>
+            <a href="{% url "quiz" pk=item.object.id %}">
+              {{ item.object.title }}
+            </a>
+          </td>
+          <td>{{ item.object.num_attempts }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+</div>
