@@ -12,3 +12,8 @@ register = template.Library()
 @register.filter
 def score(attempt):
   return str(attempt.score * 100) + '%'
+
+
+@register.filter
+def get_dict_item(dictionary, key):
+    return dictionary.get(key)

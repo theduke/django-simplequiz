@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="page-quiz-list">
+  <div class="quiz-list-wrap">
+
+    <table class="table quiz-list">
+      <tr>
+        <th>Name</th>
+        <th>Plays</th>
+        <th>Likes</th>
+        <th>My score</th>
+        <th>Play!</th>
+      </tr>
+
+      {% for item in items %}
+        <tr>
+          <td>{{ item.object.title }}</td>
+          <td>{{ item.object.num_attempts }}</td>
+          <td>{{ item.object.num_likes }}</td>
+          <td>{{ item.max_score_verbose|default:"Not played" }}</td>
+          <td>
+            <a href="{% url "quiz" pk=item.object.id %}" class="btn btn-sm btn-info">Play now!</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </div> 
+</div>
+{% endblock content %}

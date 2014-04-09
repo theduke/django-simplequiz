@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http.response import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.contrib.messages.views import SuccessMessageMixin
 
 from captcha.fields import CaptchaField
@@ -45,6 +45,10 @@ def discover(request):
     likes = QuizLike.objects.filter(user=request.user, id__in=ids).values_list('quiz_id')
     likes = [x[0] for x in likes]
 
+    # Also get the players best score.
+    scores = Attempt.objects.filter(user=request.user, quiz_id__in=ids).order_by('-score')
+    
+
     return render(request, 'django_simplequiz/discover.html', {
         'page_title': 'Discover Quizzes',
         'head_title': 'Discover Quizzes',
@@ -54,6 +58,78 @@ def discover(request):
 
         'likes': likes,
     })
+
+
+def get_quiz_list_data(queryset, user):
+    """
+    Get all the relevant data for displaying a list of quizzes,
+    including number of likes, number of attempts,
+    whether user has liked the quiz, best score of the user,
+    etc.
+
+    All data is efficiently retrieved with as view queries as 
+    possible.
+    """
+
+    qs = queryset.annotate(num_attempts=Count('attempts', distinct=True))\
+                .annotate(num_likes=Count('likes', distinct=True))
+
+    likes = []
+    score_map = {}
+
+    if user and user.is_authenticated():
+        # Get attempts data FOR USER:
+        #max_scores = qs.filter(attempts__user_id=user.id).distinct()\
+        # .annotate(max_score=Max('attempts__score'))\
+        # .values_list('id', 'max_score')
+
+        max_scores = Attempt.objects.filter(user=user).order_by('-score').values_list('quiz', 'score')
+
+        score_map = {}
+        for row in max_scores:
+            if not (row[0] in score_map):
+                score_map[row[0]] = row[1]
+        
+        # Collect likes for all displayed quizzes to prevent extra queries.
+        likes = QuizLike.objects.filter(user=user, id__in=qs.only('id').all()).values_list('quiz_id', flat=True)
+
+    items = []
+    for obj in qs:
+        items.append({
+            'object': obj,
+            'liked': obj.id in likes,
+            'max_score': score_map[obj.id] if obj.id in score_map else None,
+            'max_score_verbose': str(score_map[obj.id] * 100) + '%' if obj.id in score_map else ""
+        })
+
+    return items
+
+
+class QuizListView(ListView):
+
+    model = Quiz
+    template_name = "django_simplequiz/quiz_list.html"
+    page_title = "Quizzes"
+
+
+    def get_queryset(self):
+        qs = Quiz.objects.filter(published=True)
+
+        category = self.kwargs.get('category') or self.request.GET.get('category')
+        if category:
+            category = get_object_or_404(Category, slug=category)
+            qs = qs.filter(category=category)
+
+        return qs
+
+    def get_context_data(self):
+        ctx = super(QuizListView, self).get_context_data()
+
+        ctx['items'] = get_quiz_list_data(self.get_queryset(), self.request.user)
+        ctx['page_title']  = self.page_title
+        ctx['head_title'] = self.page_title
+
+        return ctx
 
 
 @login_required
