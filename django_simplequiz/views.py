@@ -197,7 +197,7 @@ def save_attempt(request):
     attempt.mistakes = int(request.POST.get('mistakes'))
     attempt.right_answers = int(request.POST.get('right_answers'))
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         attempt.user = request.user
 
     attempt.save()
@@ -205,7 +205,7 @@ def save_attempt(request):
     pos, attempts = attempt.get_rank()
 
     personal_pos = personal_attempts = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         personal_pos, personal_attempts = attempt.get_personal_rank()
 
     answer = {
